@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "build": "esbuild create_order.ts --bundle --minify --sourcemap --platform=node --external:aws-sdk --target=es2020 --outfile=dist/create_order.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.927.0",
+    "@aws-sdk/lib-dynamodb": "^3.927.0",
+    "@types/aws-lambda": "^8.10.157",
+    "@types/node": "^24.10.0",
+    "esbuild": "^0.27.0",
+    "uuid": "^13.0.0"
+  }
+}

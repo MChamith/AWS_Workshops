@@ -1,0 +1,30 @@
+{
+  "name": "ws-serverless-patterns",
+  "version": "1.0.0",
+  "description": "Severless Workshop Terraform/Typescript",
+  "license": "MIT",
+  "bin": {
+    "tf-app": "bin/ws-serverless-patterns.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest --config ./jest.config.js"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-cloudformation": "^3.927.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.927.0",
+    "@aws-sdk/client-secrets-manager": "^3.927.0",
+    "@aws-sdk/lib-dynamodb": "^3.927.0",
+    "@faker-js/faker": "^9.9.0",
+    "@types/aws-lambda": "^8.10.157",
+    "@types/jest": "^30.0.0",
+    "@types/uuid": "^10.0.0",
+    "aws-sdk-client-mock": "^4.1.0",
+    "axios": "^1.13.2",
+    "esbuild": "^0.25.12",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.5",
+    "uuid": "^8.3.2"
+  }
+}

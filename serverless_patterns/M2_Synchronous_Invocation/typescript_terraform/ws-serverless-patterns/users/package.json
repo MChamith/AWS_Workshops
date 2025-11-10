@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "@aws-sdk/client-cloudformation": "^3.927.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.927.0",
+    "@aws-sdk/client-secrets-manager": "^3.927.0",
+    "@faker-js/faker": "^9.9.0",
+    "axios": "^1.13.2"
+  }
+}
