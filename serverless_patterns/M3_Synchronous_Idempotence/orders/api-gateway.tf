@@ -12,6 +12,12 @@ resource "aws_api_gateway_resource" "orders_resource" {
   path_part   = "orders"
 }
 
+resource "aws_api_gateway_resource" "order_id_resource" {
+  rest_api_id = aws_api_gateway_rest_api.workshop_api.id
+  parent_id   = aws_api_gateway_resource.orders_resource.id
+  path_part   = "{orderId}"
+}
+
 resource "aws_api_gateway_authorizer" "cognito_authorizer" {
   name            = "Module3CognitoAuthorizer"
   rest_api_id     = aws_api_gateway_rest_api.workshop_api.id
@@ -28,6 +34,22 @@ resource "aws_api_gateway_method" "orders_post" {
   authorizer_id = aws_api_gateway_authorizer.cognito_authorizer.id
 }
 
+resource "aws_api_gateway_method" "orders_get" {
+  rest_api_id   = aws_api_gateway_rest_api.workshop_api.id
+  resource_id   = aws_api_gateway_resource.order_id_resource.id
+  http_method   = "GET"
+  authorization = "COGNITO_USER_POOLS"
+  authorizer_id = aws_api_gateway_authorizer.cognito_authorizer.id
+}
+
+resource "aws_api_gateway_integration" "orders_get_integration" {
+  rest_api_id             = aws_api_gateway_rest_api.workshop_api.id
+  resource_id             = aws_api_gateway_resource.order_id_resource.id
+  http_method             = aws_api_gateway_method.orders_get.http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.get_order_lambda.invoke_arn
+}
 resource "aws_api_gateway_integration" "orders_post_integration" {
   rest_api_id             = aws_api_gateway_rest_api.workshop_api.id
   resource_id             = aws_api_gateway_resource.orders_resource.id
@@ -40,7 +62,10 @@ resource "aws_api_gateway_integration" "orders_post_integration" {
 resource "aws_api_gateway_deployment" "orders_deployment" {
   rest_api_id = aws_api_gateway_rest_api.workshop_api.id
   triggers = {
-    redeployment = sha1(jsonencode(aws_api_gateway_integration.orders_post_integration))
+    redeployment = sha1(jsonencode([
+      aws_api_gateway_integration.orders_post_integration.id,
+      aws_api_gateway_integration.orders_get_integration.id
+    ]))
   }
   lifecycle {
     create_before_destroy = true
@@ -60,6 +85,14 @@ resource "aws_lambda_permission" "api_gw_invoke_permission" {
   function_name = aws_lambda_function.create_order_lambda.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.workshop_api.execution_arn}/*/*/*"
+}
+
+resource "aws_lambda_permission" "api_gw_get_invoke_permission" {
+  statement_id  = "AllowGetOrderExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.get_order_lambda.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.workshop_api.execution_arn}/*/GET/orders/*"
 }
 
 output "OrdersAPIEndpoint" {

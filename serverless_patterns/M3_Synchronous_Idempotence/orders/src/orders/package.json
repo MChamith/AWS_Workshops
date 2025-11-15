@@ -1,13 +1,17 @@
 {
   "scripts": {
-    "build": "esbuild create_order.ts --bundle --minify --sourcemap --platform=node --external:aws-sdk --target=es2020 --outfile=dist/create_order.js"
+    "build": "esbuild create_order.ts get_order.ts --bundle --minify --sourcemap --platform=node --external:aws-sdk --external:order-utils --target=es2020 --outdir=dist"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.927.0",
-    "@aws-sdk/lib-dynamodb": "^3.927.0",
     "@types/aws-lambda": "^8.10.157",
     "@types/node": "^24.10.0",
     "esbuild": "^0.27.0",
     "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.927.0",
+    "@aws-sdk/client-dynamodb": "^3.927.0",
+    "@aws-sdk/client-secrets-manager": "^3.927.0",
+    "@aws-sdk/lib-dynamodb": "^3.927.0"
   }
 }
